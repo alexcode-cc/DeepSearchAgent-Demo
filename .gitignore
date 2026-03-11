@@ -63,6 +63,7 @@ streamlit_reports/
 *.md
 !README.md
 !LICENSE
+!docs-cht/*.md
 
 # Streamlit
 .streamlit/
