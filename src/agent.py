@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 
-from .llms import DeepSeekLLM, OpenAILLM, BaseLLM
+from .llms import DeepSeekLLM, OpenAILLM, OllamaLLM, BaseLLM
 from .nodes import (
     ReportStructureNode,
     FirstSearchNode, 
@@ -61,6 +61,11 @@ class DeepSearchAgent:
             return OpenAILLM(
                 api_key=self.config.openai_api_key,
                 model_name=self.config.openai_model
+            )
+        elif self.config.default_llm_provider == "ollama":
+            return OllamaLLM(
+                model_name=self.config.ollama_model,
+                base_url=self.config.ollama_base_url
             )
         else:
             raise ValueError(f"不支持的LLM提供商: {self.config.default_llm_provider}")
