@@ -1,0 +1,45 @@
+# Deep Search Agent 設定檔
+# 複製此檔案為 config.toml 並填入您的 API 金鑰：
+#   cp config-sample.toml config.toml
+
+# ===== API 金鑰（機密）=====
+
+[secrets]
+deepseek_api_key = "your_deepseek_api_key_here"
+openai_api_key   = "your_openai_api_key_here"       # 選用
+tavily_api_key   = "your_tavily_api_key_here"
+
+# ===== LLM 提供商設定 =====
+
+[llm]
+# 可選值: "deepseek", "openai", "ollama"
+default_provider = "deepseek"
+
+[llm.deepseek]
+model = "deepseek-chat"
+
+[llm.openai]
+model = "gpt-4o-mini"
+
+[llm.ollama]
+model    = "llama3"
+base_url = "http://localhost:11434/v1"
+
+# ===== 搜尋設定 =====
+
+[search]
+max_results    = 3
+timeout        = 240
+max_content_length = 20000
+
+# ===== Agent 設定 =====
+
+[agent]
+max_reflections = 2
+max_paragraphs  = 5
+
+# ===== 輸出設定 =====
+
+[output]
+dir = "reports"
+save_intermediate_states = true
