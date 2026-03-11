@@ -44,14 +44,20 @@ def main():
         max_content_length = st.number_input("最大内容长度", 1000, 50000, 20000)
         
         # 模型选择
-        llm_provider = st.selectbox("LLM提供商", ["deepseek", "openai"])
-        
+        llm_provider = st.selectbox("LLM提供商", ["deepseek", "openai", "ollama"])
+        openai_key = ""
+        ollama_base_url = "http://localhost:11434/v1"
+
         if llm_provider == "deepseek":
             model_name = st.selectbox("DeepSeek模型", ["deepseek-chat"])
-        else:
+        elif llm_provider == "openai":
             model_name = st.selectbox("OpenAI模型", ["gpt-4o-mini", "gpt-4o"])
             openai_key = st.text_input("OpenAI API Key", type="password",
                                      value="")
+        else:
+            model_name = st.text_input("Ollama模型名称", value="llama3")
+            ollama_base_url = st.text_input("Ollama服务地址",
+                                           value="http://localhost:11434/v1")
     
     # 主界面
     col1, col2 = st.columns([2, 1])
@@ -102,15 +108,15 @@ def main():
         if not deepseek_key and llm_provider == "deepseek":
             st.error("请提供DeepSeek API Key")
             return
-        
+
         if not tavily_key:
             st.error("请提供Tavily API Key")
             return
-        
+
         if llm_provider == "openai" and not openai_key:
             st.error("请提供OpenAI API Key")
             return
-        
+
         # 创建配置
         config = Config(
             deepseek_api_key=deepseek_key if llm_provider == "deepseek" else None,
@@ -119,6 +125,8 @@ def main():
             default_llm_provider=llm_provider,
             deepseek_model=model_name if llm_provider == "deepseek" else "deepseek-chat",
             openai_model=model_name if llm_provider == "openai" else "gpt-4o-mini",
+            ollama_model=model_name if llm_provider == "ollama" else "llama3",
+            ollama_base_url=ollama_base_url if llm_provider == "ollama" else "http://localhost:11434/v1",
             max_reflections=max_reflections,
             max_search_results=max_search_results,
             max_content_length=max_content_length,
