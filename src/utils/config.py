@@ -17,9 +17,11 @@ class Config:
     tavily_api_key: Optional[str] = None
     
     # 模型配置
-    default_llm_provider: str = "deepseek"  # deepseek 或 openai
+    default_llm_provider: str = "deepseek"  # deepseek, openai 或 ollama
     deepseek_model: str = "deepseek-chat"
     openai_model: str = "gpt-4o-mini"
+    ollama_model: str = "llama3"
+    ollama_base_url: str = "http://localhost:11434/v1"
     
     # 搜索配置
     max_search_results: int = 3
@@ -40,15 +42,17 @@ class Config:
         if self.default_llm_provider == "deepseek" and not self.deepseek_api_key:
             print("错误: DeepSeek API Key未设置")
             return False
-        
+
         if self.default_llm_provider == "openai" and not self.openai_api_key:
             print("错误: OpenAI API Key未设置")
             return False
-        
+
+        # Ollama 本地服务不需要 LLM API Key
+
         if not self.tavily_api_key:
             print("错误: Tavily API Key未设置")
             return False
-        
+
         return True
     
     @classmethod
@@ -70,6 +74,8 @@ class Config:
                 default_llm_provider=getattr(config_module, "DEFAULT_LLM_PROVIDER", "deepseek"),
                 deepseek_model=getattr(config_module, "DEEPSEEK_MODEL", "deepseek-chat"),
                 openai_model=getattr(config_module, "OPENAI_MODEL", "gpt-4o-mini"),
+                ollama_model=getattr(config_module, "OLLAMA_MODEL", "llama3"),
+                ollama_base_url=getattr(config_module, "OLLAMA_BASE_URL", "http://localhost:11434/v1"),
                 max_search_results=getattr(config_module, "SEARCH_RESULTS_PER_QUERY", 3),
                 search_timeout=getattr(config_module, "SEARCH_TIMEOUT", 240),
                 max_content_length=getattr(config_module, "SEARCH_CONTENT_MAX_LENGTH", 20000),
@@ -97,6 +103,8 @@ class Config:
                 default_llm_provider=config_dict.get("DEFAULT_LLM_PROVIDER", "deepseek"),
                 deepseek_model=config_dict.get("DEEPSEEK_MODEL", "deepseek-chat"),
                 openai_model=config_dict.get("OPENAI_MODEL", "gpt-4o-mini"),
+                ollama_model=config_dict.get("OLLAMA_MODEL", "llama3"),
+                ollama_base_url=config_dict.get("OLLAMA_BASE_URL", "http://localhost:11434/v1"),
                 max_search_results=int(config_dict.get("SEARCH_RESULTS_PER_QUERY", "3")),
                 search_timeout=int(config_dict.get("SEARCH_TIMEOUT", "240")),
                 max_content_length=int(config_dict.get("SEARCH_CONTENT_MAX_LENGTH", "20000")),
@@ -148,6 +156,8 @@ def print_config(config: Config):
     print(f"LLM提供商: {config.default_llm_provider}")
     print(f"DeepSeek模型: {config.deepseek_model}")
     print(f"OpenAI模型: {config.openai_model}")
+    print(f"Ollama模型: {config.ollama_model}")
+    print(f"Ollama服务地址: {config.ollama_base_url}")
     print(f"最大搜索结果数: {config.max_search_results}")
     print(f"搜索超时: {config.search_timeout}秒")
     print(f"最大内容长度: {config.max_content_length}")
